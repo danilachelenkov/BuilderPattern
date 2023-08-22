@@ -1,5 +1,8 @@
 package ru.netology;
 
+import java.util.OptionalInt;
+import java.util.Scanner;
+
 public class Main {
     public static void main(String[] args) {
 
@@ -28,6 +31,12 @@ public class Main {
                     .setAge(-110)
                     .build();
         } catch (IllegalArgumentException ex) {
+            System.out.println(ex.getMessage());
+        }
+
+        try {
+            new Person("Иванов", "Иван").happyBirthday();
+        } catch (IllegalStateException ex) {
             System.out.println(ex.getMessage());
         }
     }

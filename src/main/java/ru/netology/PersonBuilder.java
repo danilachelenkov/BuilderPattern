@@ -9,7 +9,6 @@ public class PersonBuilder implements IPersonBuilder {
 
     public PersonBuilder() {
         super();
-
     }
 
     public PersonBuilder setName(String name) {

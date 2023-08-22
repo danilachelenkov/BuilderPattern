@@ -1,25 +1,36 @@
 package ru.netology;
 
+import java.util.OptionalInt;
+
 public class Person {
     protected final String name;
     protected final String surname;
-    private int age;
+    private OptionalInt age;
     private String adress;
 
     public Person(String name, String surname) {
         this.name = name;
         this.surname = surname;
-        this.age = -1;
+        this.age = OptionalInt.empty();
     }
 
     public Person(String name, String surname, int age) {
+
+        if (age < 0) {
+            throw new IllegalArgumentException("Age может быть только положительным числом");
+        }
+
         this.name = name;
         this.surname = surname;
-        this.age = (age < 0) ? 0 : age;
+        this.age = OptionalInt.of(age);
     }
 
     public void happyBirthday() {
-        if (hasAge()) this.age++;
+        if (hasAge()) {
+            this.age = OptionalInt.of(this.age.getAsInt() + 1);
+        } else {
+            throw new IllegalStateException(String.format("Возраст персоны [%s %s] не задан", this.surname, this.name));
+        }
     }
 
     public boolean hasAdress() {
@@ -27,14 +38,14 @@ public class Person {
     }
 
     public boolean hasAge() {
-        return (this.age >= 0) ? true : false;
+        return (this.age.isPresent()) ? true : false;
     }
 
     public PersonBuilder newChildBuilder() {
         PersonBuilder personBuilder = new PersonBuilder();
         personBuilder.setSurname(this.surname);
         personBuilder.setAdress(this.adress);
-        personBuilder.setAge(10);
+        personBuilder.setAge(0);
 
         return personBuilder;
     }
@@ -47,7 +58,7 @@ public class Person {
         return surname;
     }
 
-    public int getAge() {
+    public OptionalInt getAge() {
         return age;
     }
 
@@ -61,18 +72,19 @@ public class Person {
 
     @Override
     public int hashCode() {
-        if (!hasAdress()) this.adress = "";
-        return String.join(this.name, this.surname, Integer.toString(this.age), this.adress)
+        if (!hasAdress())
+            this.adress = "";
+
+        return String.join(" ", this.name, this.surname, Integer.toString(this.age.getAsInt()), this.adress)
                 .hashCode();
     }
 
     @Override
     public String toString() {
         return "Person:\r" +
-                "\nname = " + this.name +
+                "\nname    = " + this.name +
                 "\nsurname = " + this.surname +
-                "\nage = " + Integer.toString(this.age) +
-                "\nadress = " + this.adress;
-
+                "\nage     = " + Integer.toString(this.age.getAsInt()) +
+                "\nadress  = " + this.adress;
     }
 }
